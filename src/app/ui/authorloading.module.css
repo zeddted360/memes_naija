@@ -1,0 +1,47 @@
+.loadingContainer{
+background-color:#21222a;
+height: 100%;
+width: 2rem;
+padding: 0.5rem;
+display: grid;
+place-items: center;
+animation-name: blink;
+animation-duration: 3s;
+animation-timing-function: linear;
+animation-fill-mode: both;
+animation-iteration-count: infinite;
+@apply
+rounded-lg
+}
+.loading {
+background:#f1f1f1;
+height: 100%;
+/* width: 2rem; */
+display: grid;
+place-items: center;
+animation-name: blink;
+animation-duration: 3s;
+animation-timing-function: linear;
+animation-fill-mode: both;
+animation-iteration-count: infinite;
+@apply
+rounded-lg
+}
+
+@keyframes blink {
+    0% {
+            opacity: .2;
+    }
+    25% {
+        opacity: .4;
+    }
+    50% {
+        opacity: .2;
+    }
+    75% {
+        opacity:.4
+    }
+    100% {
+        opacity: .2;
+    }
+}

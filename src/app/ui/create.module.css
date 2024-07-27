@@ -1,0 +1,76 @@
+.create_container {
+width: 80%;
+margin: 0 auto;
+    @apply
+    flex
+    flex-col
+    rounded-lg
+    p-4
+    shadow-lg
+}
+.create_container form {
+    background:var(--dark-gray);
+    margin: 0 auto;
+    width:100%;
+    flex:2;
+    @apply
+    p-4
+    flex
+    flex-col
+    gap-1
+    items-center
+    justify-center
+    rounded-lg
+    shadow-lg
+}
+
+.create_container form div {
+display: grid;
+place-items: center;
+width: 100%;
+    @apply
+    p-1
+    rounded-lg
+    m-1
+} 
+.create_container form input {
+    width: 100%;
+    height:2.2rem;
+     @apply
+    rounded-lg
+}
+.create_container form input::placeholder{
+    text-indent: 5px;
+}
+ .create_container form  textarea {
+    width: 100%;
+    @apply
+    rounded-lg
+} .create_container form  textarea::placeholder{
+    text-indent: 5px;
+}
+
+ .nonDisabled {
+    background-color: var(--bg-light);
+    color: var(--cl-light);
+    align-self: center;
+    text-align: center;
+    width: 100%;
+    font-size: bold;
+    @apply
+    rounded-lg
+    px-2
+    py-2
+} 
+.disabled {
+ background-color: #f1f1f1;
+    color: var(--dark-gray);
+    align-self: center;
+    text-align: center;
+    width: 100%;
+    font-size: bold;
+    @apply
+    rounded-lg
+    px-2
+    py-2
+}

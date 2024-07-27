@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+:root{
+    --bg-light:#3b82f6;
+    --cl-light:#f0f9ff;
+    --dark-gray:#ddd;
+    --light-gray:#f9f9f9;
+    --dark:#21222a;
+}
+
+.button:not(.replyButton) {
+    @apply
+    px-2
+    py-1
+    rounded-md
+    text-lg
+    bg-[var(--light-gray)]
+    w-1/2
+    text-[var(--bg-light)]
+    m-4
+    font-bold
+}
+.replyButton {
+    background-color: var(--dark);
+}
+.custom_button {
+    @apply
+    rounded-lg
+    text-sm
+    px-2
+    py-1
+    bg-[var(--light-gray)]
+    hover:px-3
+}
+.cursor {
+    cursor: pointer;
+}
+
+svg {
+    /* font-size: 2rem; */
+    font-weight: bold;
+    cursor: pointer;
+}

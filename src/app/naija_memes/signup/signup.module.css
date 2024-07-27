@@ -1,0 +1,123 @@
+
+/* ui styles */
+.signUp {
+    /* background-color: red; */
+    width:100%;
+    height:100%;
+    @apply
+    rounded-lg
+    p-4
+    flex
+    flex-col
+    items-center
+    justify-center
+   
+}
+.signUp form {
+    min-width: 70%;
+    min-height:70%;
+    margin: 0 auto;
+    @apply
+     flex
+    flex-col
+    items-center
+    justify-center
+    rounded-lg
+    shadow-lg
+    p-4
+}
+.signUp form div:not(.checkboxesContainer) {
+    width:100%;
+    @apply
+    p-2
+    m-2
+    flex
+    flex-col
+    items-center
+}
+.signUp form div:nth-child(3) span{
+    margin-top: -2%;
+    width: 100%;
+    @apply
+    flex
+    justify-start
+
+}
+
+.signUp form input:not(input[type='checkbox']) {
+    height: 2.5rem;
+    outline: none;
+    border-bottom: 2px solid;
+    text-indent: 2px;
+    width: 50%;
+    @apply
+    rounded-lg
+    w-full
+}
+.nonDisabled {
+    background-color: var(--bg-light);
+    color:var(--cl-light);
+    margin:0 auto;
+    width:100%;
+    @apply
+    px-2
+    py-1
+    rounded-lg
+}
+.disabled {
+     background-color: #ddd;
+    color:var(--cl-light);
+    margin:0 auto;
+    width:100%;
+    @apply
+    px-2
+    py-1
+    rounded-lg
+}
+.error {
+    @apply
+    bg-red-200
+    rounded-lg
+    border-red-400
+    text-red-700
+    text-sm
+    border
+    text-center
+}
+.errorPassword {
+    @apply
+    bg-red-200
+    rounded-lg
+    border-red-400
+    text-red-700
+    text-sm
+    border
+    text-center 
+    w-1/2
+}
+.checkboxesContainer {
+    margin: 0 auto;
+    width: 50%;
+    height: fit-content;
+    display: grid;
+    place-items: center;
+    @apply
+    bg-red-100
+    text-red-700
+    p-1
+    rounded-lg
+    border
+    border-red-400
+    text-xs
+    m-2
+}
+.checkboxesContainer div {
+   @apply
+   bg-red-50
+   rounded-lg
+}
+.checkboxesContainer div span input {
+    width: 1.5rem;
+    @apply
+    mr-2
+}

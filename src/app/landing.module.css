@@ -1,0 +1,80 @@
+.main {
+    width: 100vw;
+    height: 100vh;
+}
+.landingHead {
+    padding: .5rem;
+    height: 10%;
+    display: grid;
+    place-items: center;
+    @apply
+    bg-blue-300
+    text-blue-950
+    text-2xl
+    font-bold
+}
+.landingBody{
+height: 80%;
+width: 100%;
+padding: 1rem;
+@apply
+flex
+flex-col
+md:flex-row
+gap-4
+}
+.landingFooter{
+    height:10%;
+    display: grid;
+    place-items: center;
+    @apply
+    bg-blue-100
+    text-blue-800
+}
+.welcomeMessage {
+    padding: 1rem;
+  @apply
+    bg-blue-300
+    text-blue-950
+    rounded-lg
+    flex
+    items-center
+    md:w-3/4
+}
+.linksContainer {
+    padding: 1rem;
+ @apply
+    bg-blue-100
+    text-blue-800
+    rounded-lg
+     flex
+    items-center
+    justify-center
+    gap-2
+    md:w-1/4
+
+}
+.linksContainer a {
+    /* background-color: red; */
+    @apply
+    rounded-lg
+    px-2
+    py-1
+    text-lg
+}
+.linksContainer a:first-child {
+    @apply
+    bg-blue-300
+    text-blue-800
+}
+.linksContainer a:nth-child(2) {
+     @apply
+    bg-green-300
+    text-green-800
+}
+.linksContainer a:last-child {
+     @apply
+   
+     bg-slate-300
+    text-slate-800
+} 

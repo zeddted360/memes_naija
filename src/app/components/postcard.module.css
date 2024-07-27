@@ -1,0 +1,48 @@
+.postCard {
+    background-color: #f1f1f1;
+    transition: .5s;
+    width: 100%;
+    margin: 0 auto;
+    @apply
+    p-2
+    rounded-lg
+}
+.postCard:hover {
+    background-color: var(--dark-gray);
+
+}
+.mediaContainer {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    gap:.05rem;
+    width: 100%;
+    height: 100%;
+    @apply
+    p-1
+    rounded-lg
+}
+ .imgCont {
+    position: relative;
+    width: 100%;
+    height: 20rem;
+    @apply
+    rounded-lg
+    md:h-[6rem]
+  
+}
+ .img {
+    object-fit: cover;
+    @apply
+    rounded-lg
+ }
+ .imgCont video{
+   min-width:100%;
+   @apply
+   rounded-lg
+ }
+ .detailsPage {
+    @apply
+    p-1
+ }
+ 

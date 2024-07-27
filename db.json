@@ -1,0 +1,60 @@
+{
+  "authors": [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "email": "john.doe@example.com",
+      "bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed et ex eu lorem ultricies congue."
+    },
+    {
+      "id": 2,
+      "name": "Jane Smith",
+      "email": "jane.smith@example.com",
+      "bio": "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas."
+    },
+    {
+      "id": 3,
+      "name": "Alice Johnson",
+      "email": "alice.johnson@example.com",
+      "bio": "Vivamus malesuada augue nec quam gravida placerat. Nam nec quam sed libero maximus malesuada."
+    }
+  ],
+  "posts": [
+    {
+      "id": 1,
+      "title": "First Post",
+      "authorId": 1,
+      "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed et ex eu lorem ultricies congue."
+    },
+    {
+      "id": 2,
+      "title": "Second Post",
+      "authorId": 2,
+      "content": "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas."
+    },
+    {
+      "id": 3,
+      "title": "Third Post",
+      "authorId": 3,
+      "content": "Vivamus malesuada augue nec quam gravida placerat. Nam nec quam sed libero maximus malesuada."
+    },
+    {
+      "id": 4,
+      "title": "Fourth Post",
+      "authorId": 1,
+      "content": "Duis mollis, est non dapibus rutrum, leo est porttitor odio, nec gravida elit sem ac urna."
+    },
+    {
+      "id": 5,
+      "title": "Fifth Post",
+      "authorId": 2,
+      "content": "Proin vehicula vestibulum metus, auctor gravida justo varius nec."
+    },
+    {
+      "id": 6,
+      "title": "Sixth Post",
+      "authorId": 3,
+      "content": "Fusce volutpat varius ante, sit amet lobortis orci lobortis eget."
+    }
+  ]
+}

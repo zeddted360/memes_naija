@@ -1,0 +1,77 @@
+.sideBar {
+    position:absolute;
+    right: -.5%;
+    top: 100%;
+    width:50%;
+    background: var( --bg-light);
+    color: var(--cl-light);
+    @apply
+    md:hidden
+    rounded-lg
+    p-4
+}
+.sideBar nav {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding:1rem;
+    gap:2;
+}
+.sideBar nav a {
+    border-bottom: 2px solid;
+    @apply
+    rounded-lg
+    px-2
+    py-1
+    m-2
+    font-semibold
+    w-full
+    text-center
+}
+.sideBar nav a.active {
+    background-color:var(--dark-gray);
+    color: var(--bg-light);
+    font-size: large;
+} 
+.changeTheme {
+min-width:100%;
+margin: 0 auto;
+display: flex;
+justify-content: center;
+align-items:center;
+gap: .5rem;
+width:fit-content;
+} 
+.inner {
+background-color: blue;
+width:50%;
+border: inset 1px;
+@apply
+rounded-full
+p-1
+}
+.ball {
+    margin-left: .2rem;
+    width:2rem;
+    height: 2rem;
+    border-radius: 2rem;
+}
+.animate{
+    /* margin-left: .2rem;
+    width:2rem;
+    height: 2rem;
+    border-radius: 2rem; */
+ animation-name: roll;
+    animation-duration: .5s;
+    animation-delay: 0;
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+}
+@keyframes roll {
+    from {
+        transform: translateX(0);
+    }
+    to {
+         transform: translateX(200%);
+    }
+}

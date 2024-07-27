@@ -1,0 +1,27 @@
+.navLinks {
+    @apply
+    hidden
+    md:flex
+}
+.navLinks nav {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding:1rem;
+    gap:2;
+}
+.navLinks nav a {
+    border-bottom: 2px solid;
+    @apply
+    rounded-lg
+    px-2
+    py-1
+    m-2
+    font-semibold
+    w-full
+    text-center
+}
+.active {
+    background-color: var(--bg-light);
+    color: var(--cl-light);
+}
