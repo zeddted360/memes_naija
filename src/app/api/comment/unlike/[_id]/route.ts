@@ -1,14 +1,14 @@
-import { IContext } from "@/app/types/types";
+import { IContext, Isession } from "@/app/types/types";
 import { comment, user } from "@/models/model";
 import { connectDB } from "@/utils/connectDB";
 import { NextRequest, NextResponse } from "next/server";
 
 export const PATCH = async (req: NextRequest, context: IContext) => {
   const { _id } = context.params;
-  const { author } = await req.json();
+  const { session }: { session: Isession } = await req.json();
   try {
     await connectDB();
-    const foundAuthor = await user.findOne({ _id: author });
+    const foundAuthor = await user.findOne({ email: session.user.email });
     if (foundAuthor) {
       const res = await comment.findOneAndUpdate(
         { _id },

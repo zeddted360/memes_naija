@@ -4,6 +4,13 @@ export interface IContext {
   params: { _id: string };
 }
 
+export interface Ireplies {
+  author: mongoose.Types.ObjectId;
+  reply: string;
+  file?: [String];
+  likes?: mongoose.Types.ObjectId;
+  createdAt: Date;
+}
 export type LinkType = {
   path: String;
   title: String;

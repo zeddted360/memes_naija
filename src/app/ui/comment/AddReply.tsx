@@ -1,72 +1,71 @@
-"use client";
-import { ICommentClient, Isession } from "@/app/types/types";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { baseURL, ICommentClient, Isession } from "@/app/types/types";
 import { useRouter } from "next/navigation";
-
-const AddComment = ({
+import { scrollToView } from "@/utils/scroll";
+const AddReply = ({
+  commentId,
   session,
-  postId,
+  setToggleReplies,
+  openReply,
 }: {
+  commentId: string;
   session: Isession;
-  postId: number;
+  setToggleReplies: React.Dispatch<React.SetStateAction<boolean>>;
+  openReply: Boolean;
 }) => {
+  // scrollveiw for form
+  useEffect(() => {
+    if (openReply) scrollToView("reply");
+  }, [openReply]);
+
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [comment, setComment] = useState<ICommentClient>({
     content: "",
     files: null,
   });
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
   const [showMessage, setShowMessage] = useState(false);
-
-  useEffect(() => {
-    if (message) {
-      setShowMessage(true);
-      setTimeout(() => {
-        setShowMessage(false);
-      }, 2000);
-    }
-  }, [message]);
-
+  let isFormValid = () => {
+    if (comment.content) return true;
+    return false;
+  };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    if (!session.user) {
-      return;
-    }
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
-    formData.append("user", `${session?.user.email}`);
-    formData.append("postId", `${postId}`);
-    formData.append("comment", comment.content);
+    formData.append("commentId", commentId);
+    formData.append("session", JSON.stringify(session));
     try {
-      const res = await fetch(`/api/comment/add`, {
+      const res = await fetch(`${baseURL}/api/comment/reply/add`, {
         method: "POST",
         body: formData,
       });
-      const data = await res.json();
-      setComment((prev) => ({
-        ...prev,
-        content: "",
-        files: null,
-      }));
-      router.refresh();
+      if (!res) {
+        throw new Error("something went wrong");
+      }
+      const data: { message: string } = await res.json();
       setMessage(data.message);
-      form.reset();
+      setLoading(false);
       setComment((prev) => ({
         ...prev,
         content: "",
         files: null,
       }));
+      form.reset();
+      router.refresh();
+      setToggleReplies(true);
     } catch (error: any) {
-      console.error(error.message);
-    } finally {
+      console.error("error: ", error.message);
       setLoading(false);
-      setError("error: something went wrong");
-
-      setError("");
     }
+  };
+
+  const handleText = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setComment((prev) => ({ ...prev, content: value }));
   };
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,13 +85,8 @@ const AddComment = ({
     }));
   };
 
-  const handleText = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setComment((prev) => ({ ...prev, content: value }));
-  };
-
   return (
-    <div className="addComment">
+    <div className="flex justify-center border rounded-lg ">
       {showMessage && (
         <div
           className={`message absolute p-2 shadow-lg top-[10%] left-[50%] translate-x-[-50%] px-4 rounded-lg text-center  ${
@@ -108,8 +102,9 @@ const AddComment = ({
         </div>
       )}
       <form
-        onSubmit={(e) => handleSubmit(e)}
-        className="flex justify-between items-center gap-2 w-3/4 p-4"
+        id="reply"
+        onSubmit={handleSubmit}
+        className="flex justify-between items-center gap-2 w-3/4 p-4 m-2"
       >
         <label htmlFor="files" title="upload photos">
           <svg
@@ -135,31 +130,40 @@ const AddComment = ({
           onChange={handleFile}
         />
         <input
-          className="border-2 rounded-lg h-[2.5rem] indent-1"
+          className="border-2 rounded-lg h-[2.5rem] indent-1 text-black"
           required
           type="text"
           name="content"
           value={comment.content}
           onChange={handleText}
-          placeholder="Leave a comment"
+          placeholder="Leave a reply"
+          autoFocus={openReply ? true : false}
         />
         <button
-          disabled={comment.content === "" || loading}
+          disabled={!isFormValid()}
           className={
-            comment.content && `bg-[--bg-light] rounded-lg px-1 text-white`
+            isFormValid()
+              ? `bg-[--bg-light] rounded-lg px-1 text-white`
+              : " rounded-lg px-1 text-slate-500"
           }
           type="submit"
         >
-          {loading ? "Submitting... " : "Submit"}
+          {loading ? (
+            "Submitting... "
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="size-6 text-[var(--cl-light)]"
+            >
+              <path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />
+            </svg>
+          )}
         </button>
       </form>
-      {error && (
-        <div className="bg-red-200 rounded-lg text-red-700 text-sm border text-center">
-          {error}
-        </div>
-      )}
     </div>
   );
 };
 
-export default AddComment;
+export default AddReply;
