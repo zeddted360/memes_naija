@@ -20,13 +20,14 @@ export interface Isession {
   expires: string;
 }
 export interface IPost {
+  _id?: mongoose.Types.ObjectId;
   title: string;
   content: string;
   file?: Array<string>;
   author: mongoose.Types.ObjectId;
   comments?: Array<mongoose.Types.ObjectId>;
   likes?: Array<mongoose.Types.ObjectId>;
-  createdAt: Date;
+  createdAt?: Date;
 }
 export interface IComment {
   _id: mongoose.Types.ObjectId;

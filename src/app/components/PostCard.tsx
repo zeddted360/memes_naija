@@ -28,7 +28,7 @@ const PostCard = async ({
       ` <mark>${term}</mark>`
     );
   };
-  if (_id == "no match")
+  if (_id.toString() == "no match")
     return (
       <h1 className="text-2xl text-center font-semi-bold">
         There are no match for this search
