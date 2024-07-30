@@ -24,13 +24,14 @@ const User = async ({ authorId }: { authorId: string }) => {
           className="flex gap-2  items-center"
           href={`/naija_memes/profile/${author.message._id}`}
         >
-          <Image
+          {/* <Image
             alt="profile pic"
             width={30}
             height={30}
             className="rounded-full"
             src={`/profile_pic/${profilePic}`}
-          />
+          /> */}
+          <p>images here</p>
           {author && <i> {username}</i>}
         </Link>
       ) : (

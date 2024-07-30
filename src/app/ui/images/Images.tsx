@@ -23,7 +23,8 @@ const Images = ({ item }: { item: IComment }) => {
               className="imgContainer  p-1 overflow-hidden rounded-lg w-full h-[9em] relative"
               key={file}
             >
-              <Image fill alt="img comments" src={`/comment/${file}`} />
+              {/* <Image fill alt="img comments" src={`/comment/${file}`} /> */}
+              <p>images here</p>
             </div>
           );
         })}

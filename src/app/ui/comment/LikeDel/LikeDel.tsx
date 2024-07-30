@@ -232,12 +232,13 @@ const LikeDel = ({
                         item.file.map((file: string) => {
                           return (
                             <div key={file} className="absolute w-[50%] h-[100%] mb-1">
-                              <Image
+                              {/* <Image
                                 className="rounded-lg"
                                 alt="images"
                                 fill
                                 src={`/comment/replies/${file}`}
-                              />
+                              /> */}
+                              <p>images here</p>
                             </div>
                           );
                         })}

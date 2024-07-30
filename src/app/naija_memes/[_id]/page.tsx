@@ -18,13 +18,13 @@ const fetchPost = async (_id: number) => {
   return res.json();
 };
 
-export const generateStaticParams = async () => {
-  const res = await fetch(`${baseURL}/api/post/getPosts`);
+// export const generateStaticParams = async () => {
+//   const res = await fetch(`${baseURL}/api/post/getPosts`);
 
-  const data = await res.json();
+//   const data = await res.json();
 
-  return data.message.map((post: any) => ({ _id: post._id }));
-};
+//   return data.message.map((post: any) => ({ _id: post._id }));
+// };
 
 export default async function Post({ params }: { params: { _id: number } }) {
   const { _id } = params;
