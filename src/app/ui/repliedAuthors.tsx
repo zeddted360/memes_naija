@@ -25,7 +25,7 @@ const RepliedAuthors = ({
       );
     }
     getAuthor();
-  }, []);
+  }, [replyData]);
 
   console.log("where", authors);
   return (
