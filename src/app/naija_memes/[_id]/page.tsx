@@ -37,7 +37,7 @@ export default async function Post({ params }: { params: { _id: number } }) {
           <Suspense fallback={<div>{<AuthorLoading />}</div>}>
             <User authorId={`${post.message.author}`} />
           </Suspense>
-          <i>{timeAgo(new Date(), new Date(post.message.createdAt))}</i>
+          <i>{timeAgo(new Date(), new Date(`${post.message.createdAt}`))}</i>
         </div>
         {/* {post.media &&
           post.media?.length !== 0 &&
