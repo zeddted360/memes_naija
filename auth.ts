@@ -22,10 +22,10 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           type: "password",
         },
       },
-        authorize: async(credentials, request) => {
+      authorize: async (credentials, request) => {
         const { userId, password } = credentials;
         try {
-          connectDB();
+          await connectDB();
           const existUser = await user.findOne({
             $or: [{ email: userId }, { username: userId }],
           });
@@ -34,16 +34,13 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             if (isPassValid) {
               return existUser;
             }
-            throw new Error("invalid password or credentiials");
-            return null;
+            throw new Error("Invalid password or credentials");
           } else {
-            throw new Error("user not registered");
-            return null;
+            throw new Error("User not registered");
           }
         } catch (error: any) {
           throw new Error(error.message);
         }
-        return null;
       },
     }),
     GitHub,
@@ -52,8 +49,9 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   basePath: BASE_PATH,
   callbacks: {
     authorized: async ({ auth }) => {
-      // Logged in users are authenticated, otherwise redirect to login page
       return !!auth;
     },
   },
+  trustHost: true,
+  secret: process.env.AUTH_SECRET,
 });
