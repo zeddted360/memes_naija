@@ -13,6 +13,7 @@ import { useFetchAuthor } from "@/context/useFetchAuthor";
 import { timeAgo } from "@/utils/timeAgo";
 import LikeDelReply from "../reply/LikeDel";
 import { scrollToView } from "@/utils/scroll";
+import Image from "next/image";
 
 const LikeDel = ({
   commentId,
@@ -204,9 +205,11 @@ const LikeDel = ({
             const foundAuthor = authors?.message.find(
               (author) => author._id?.toString() === item.author.toString()
             );
+            const username = foundAuthor?.username;
+            const usernameLength = username?.length || 0;
             return (
               <div
-                className="p-2 m-2 rounded-lg shadow-md  w-[50%]"
+                className="p-2 m-2 rounded-lg shadow-md hover:bg-[var(--dark-gray)] w-[50%]"
                 key={index}
               >
                 <div className="authors flex justify-between items-center">
@@ -215,7 +218,33 @@ const LikeDel = ({
                     {timeAgo(new Date(), new Date(item.createdAt))}
                   </i>
                 </div>
-                <p className="p-2">{item.reply}</p>
+                <div className="p-2 relative">
+                  {item.reply.includes(`@${username}`) ? (
+                    <p>
+                      <i className="text-[var(--bg-light)] text-[1rem]">
+                        {item.reply.slice(0, usernameLength + 1)}
+                      </i>
+                      <span>{item.reply.slice(usernameLength + 1)}</span>
+                    </p>
+                  ) : (
+                    <p>
+                      {item.file.some((file: string) => file) &&
+                        item.file.map((file: string) => {
+                          return (
+                            <div key={file} className="absolute w-[50%] h-[100%] mb-1">
+                              <Image
+                                className="rounded-lg"
+                                alt="images"
+                                fill
+                                src={`/comment/replies/${file}`}
+                              />
+                            </div>
+                          );
+                        })}
+                      <span>{item.reply}</span>
+                    </p>
+                  )}
+                </div>
                 <LikeDelReply
                   commentId={commentId}
                   session={session}
