@@ -1,7 +1,7 @@
 "use client";
 import { IComment } from "@/app/types/types";
 import React, { useState } from "react";
-import Image from "next/image";
+// import Image from "next/image";
 
 const Images = ({ item }: { item: IComment }) => {
   const [showMore, setShowMore] = useState(false);

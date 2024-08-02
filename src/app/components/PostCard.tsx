@@ -1,11 +1,20 @@
-import React, { Suspense } from "react";
-import styles from "./postcard.module.css";
-import Loading from "./Loading";
-import { IPost } from "@/app/types/types";
+import React from "react";
 import Image from "next/image";
-import { getImageMimeType } from "@/utils/getImageMimeType";
-import { markCurrentScopeAsDynamic } from "next/dist/server/app-render/dynamic-rendering";
 import Link from "next/link";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import styles from "./postcard.module.css";
+import { IPost, IUser } from "@/app/types/types";
+import { getAuthor } from "@/utils/getAuthor";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
 
 interface IWord extends IPost {
   words: string[];
@@ -23,77 +32,70 @@ const PostCard = async ({
   let search = words.join(" ");
   let globalSearch = new RegExp(search, "igm");
   const markedUi = (text: string, term: string) => {
-    return text.replace(
-      globalSearch,
-      ` <mark>${term}</mark>`
-    );
+    return text.replace(globalSearch, ` <mark>${term}</mark>`);
   };
-  if (`${_id}` == "no match")
+
+  if (`${_id}` == "no match") {
     return (
       <h1 className="text-2xl text-center font-semi-bold">
-        There are no match for this search
+        There are no matches for this search
       </h1>
     );
-  if (!(title && file)) return <Loading />;
+  }
+  const fetchedAuthor:IUser = await getAuthor(author.toString());
 
   return (
-    <div className={styles.postCard}>
-      {file?.length != 0 && (
-        <div className={styles.mediaContainer}>
-          {file?.length !== 0 &&
-            file?.map(async (item,index) => {
-              // const fileType = await getImageMimeType(item)
-              return (
-                <div key={index} className={styles?.imgCont}>
-                  <Image
-                    alt="logo"
-                    className={styles.img}
-                    src="/images/memesLogo.jpeg"
-                    fill
-                  />
-                  {/* {fileType?.startsWith('image') ? (
- <Image
-  className={styles.img}
-                      alt='file'
-                      src={item}
-                      fil
-                    />
-                   
-                  ) : (
-                    <video
-                      src={item}
-                      controls
-                    />
-                  )} */}
-                </div>
-              );
-            })}
+    <Card className="flex flex-col justify-between ">
+      <CardHeader>
+        <CardTitle className="text-lg">
+          {!isWord ? (
+            <span
+              dangerouslySetInnerHTML={{
+                __html: markedUi(title, search).slice(0, 50),
+              }}
+            />
+          ) : (
+            title.slice(0, 50)
+          )}
+        </CardTitle>
+        <CardDescription>
+          <FontAwesomeIcon icon={faUser} /> <i>{fetchedAuthor.username}</i>
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="text-md" >
+        {file?.length !== 0 && (
+          <div className={styles.mediaContainer}>
+            {file?.map((item, index) => (
+              <div key={index}>
+                <Image
+                  alt="logo"
+                  className='{styles.img}'
+                  src="/images/memesLogo.jpeg"
+                  fill
+                />
+              </div>
+            ))}
+          </div>
+        )}
+        <div className="{styles?.detailsPage}">
+          {!isWord ? (
+            <p
+              className="p-2"
+              dangerouslySetInnerHTML={{
+                __html: markedUi(content, search).slice(0, 50),
+              }}
+            />
+          ) : (
+            <p className="p-2">{content.slice(0, 50)}</p>
+          )}
         </div>
-      )}
-      <div className={styles?.detailsPage}>
-        {!isWord ? (
-          <h3
-            className="text-lg mb-2 font-bold"
-            dangerouslySetInnerHTML={{
-              __html: markedUi(title, search).slice(0, 50),
-            }}
-          ></h3>
-        ) : (
-          <h3 className="text-lg mb-2 font-bold">{title.slice(0, 50)}</h3>
-        )}
-        {!isWord ? (
-          <p
-            className="p-2"
-            dangerouslySetInnerHTML={{
-              __html: markedUi(content, search).slice(0, 50),
-            }}
-          ></p>
-        ) : (
-          <p className="p-2">{content.slice(0, 50)}</p>
-        )}
-        <Link className="underline text-blue-500" href={`/naija_memes/${_id}`}>read more...</Link>
-      </div>
-    </div>
+      </CardContent>
+      <CardFooter>
+        <Link href={`/naija_memes/${_id}`}>
+          <Button>Read more...</Button>
+        </Link>
+      </CardFooter>
+    </Card>
   );
 };
 

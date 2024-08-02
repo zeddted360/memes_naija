@@ -1,8 +1,9 @@
 "use client";
-import { ICommentClient, Isession } from "@/app/types/types";
+import { IComment, ICommentClient, Isession } from "@/app/types/types";
 import React, { useEffect, useState } from "react";
 import { baseURL } from "@/app/types/types";
 import { useRouter } from "next/navigation";
+import { scrollToView } from "@/utils/scroll";
 
 const LikeDelReply = ({
   openReply,
@@ -20,11 +21,15 @@ const LikeDelReply = ({
   const [loading, setLoading] = useState<Boolean>(false);
   const [comment, setComment] = useState<ICommentClient>({
     content: "",
-    files: null,
+    files: [],
   });
   const [message, setMessage] = useState("");
+
   useEffect(() => {
     if (message) setShowMessage(true);
+    setTimeout(() => {
+      setShowMessage(false);
+    },2000)
   }, [message]);
 
   const [error, setError] = useState("");
@@ -55,7 +60,8 @@ const LikeDelReply = ({
   };
   const handleDelete = async () => {};
 
-  const handleLike = async () => {};
+  const handleLike = async () => { };
+  
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -72,14 +78,22 @@ const LikeDelReply = ({
       });
       if (!res) {
         throw new Error("something went wrong");
+      };
+      const data: { message: any; data: IComment } = await res.json();
+      const replies = data.data.replies;
+      if (Array.isArray(replies)) {
+        let length = replies.length;
+        let reply = replies[length - 1];
+        setTimeout(() => {
+          setLoading(false);
+          scrollToView(`${reply?._id}`);
+        }, 2000);
       }
-      const data: { message: string } = await res.json();
       setMessage(data.message);
-      setLoading(false);
       setComment((prev) => ({
         ...prev,
         content: "",
-        files: null,
+        files: [],
       }));
       form.reset();
       router.refresh();
@@ -105,7 +119,7 @@ const LikeDelReply = ({
           <span className="m-1">{message}</span>
         </div>
       )}
-      <div className="utilityContainer flex justify-between ">
+      <div className="utilityContainer flex justify-between  ">
         {" "}
         {/* like */}
         <button>

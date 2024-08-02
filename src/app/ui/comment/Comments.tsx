@@ -22,7 +22,11 @@ const Comments = async ({
     <div className="comment container min-w-[70%] md:w-full">
       {Comments.message.map((item: IComment) => {
         return (
-          <div className="rounded-lg border m-2 p-2" key={`${item._id}`}>
+          <div
+            id={item._id.toString()}
+            className="rounded-lg border m-2 p-2"
+            key={`${item._id}`}
+          >
             <Author
               createdAt={new Date(`${item.createdAt}`)}
               author={item.author.toString()}

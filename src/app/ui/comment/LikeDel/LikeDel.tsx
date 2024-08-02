@@ -14,6 +14,7 @@ import { timeAgo } from "@/utils/timeAgo";
 import LikeDelReply from "../reply/LikeDel";
 import { scrollToView } from "@/utils/scroll";
 import Image from "next/image";
+import Link from "next/link";
 
 const LikeDel = ({
   commentId,
@@ -60,7 +61,6 @@ const LikeDel = ({
         }
       );
       const data = await res.json();
-      console.log(data);
       router.refresh();
     } catch (error: any) {
       console.error("error: ", error.message);
@@ -209,11 +209,15 @@ const LikeDel = ({
             const usernameLength = username?.length || 0;
             return (
               <div
+                id={`${item._id}`}
                 className="p-2 m-2 rounded-lg shadow-md hover:bg-[var(--dark-gray)] w-[50%]"
                 key={index}
               >
                 <div className="authors flex justify-between items-center">
-                  <i className=" text-sm">{foundAuthor?.username}</i>
+                  <Link href={`/naija_memes/profile/${foundAuthor?._id}`}>
+                    {" "}
+                    <i className=" text-sm">{foundAuthor?.username}</i>
+                  </Link>
                   <i className=" text-sm">
                     {timeAgo(new Date(), new Date(item.createdAt))}
                   </i>
@@ -222,7 +226,9 @@ const LikeDel = ({
                   {item.reply.includes(`@${username}`) ? (
                     <p>
                       <i className="text-[var(--bg-light)] text-[1rem]">
-                        {item.reply.slice(0, usernameLength + 1)}
+                        <Link href={`/naija_memes/profile/${foundAuthor?._id}`}>
+                          {item.reply.slice(0, usernameLength + 1)}
+                        </Link>
                       </i>
                       <span>{item.reply.slice(usernameLength + 1)}</span>
                     </p>
@@ -231,7 +237,10 @@ const LikeDel = ({
                       {item.file.some((file: string) => file) &&
                         item.file.map((file: string) => {
                           return (
-                            <div key={file} className="absolute w-[50%] h-[100%] mb-1">
+                            <div
+                              key={file}
+                              className="absolute w-[50%] h-[100%] mb-1"
+                            >
                               {/* <Image
                                 className="rounded-lg"
                                 alt="images"

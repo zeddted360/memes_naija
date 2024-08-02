@@ -1,5 +1,4 @@
-
-import { Ireplies, Isession, IUser } from "@/app/types/types";
+import { IComment, Ireplies, Isession, IUser } from "@/app/types/types";
 import { comment, user } from "@/models/model";
 import { uploadFile } from "@/utils/uploadFile";
 import { NextRequest, NextResponse } from "next/server";
@@ -11,11 +10,16 @@ export const POST = async (req: NextRequest) => {
   const files = formData.getAll("files") as Array<File>;
   const isFile = files.some((file: File) => file.name !== "");
   const foundAuthor = await user.findOne({ email: Session.user.email });
+  console.log("its comming here", replyId);
 
   try {
     if (isFile) {
-      const upload = await uploadFile(files, "comment/replies");
+      //when there is a file
+      console.log("there is a file");
+      const upload = await uploadFile(files, "comment/reply");
       if (replyId) {
+        console.log("when there are both reply id's and a file");
+        //when there is a file and replyId
         const findReply = await comment
           .findOne({ _id: commentId })
           .select("replies");
@@ -26,7 +30,7 @@ export const POST = async (req: NextRequest) => {
           const author: IUser = (await user.findOne({
             _id: replyAuthor.author,
           })) as IUser;
-          await comment.updateOne(
+          const res:IComment = await comment.findOneAndUpdate(
             { _id: commentId },
             {
               $push: {
@@ -38,9 +42,12 @@ export const POST = async (req: NextRequest) => {
               },
             },
             { new: true }
-          );
+          ) as IComment;
+          return NextResponse.json({ message:"reply received",data:res });
         }
       } else {
+        console.log("when there is no reply id but there is a file");
+        // when there is no reply Id but there is a file
         await comment.updateOne(
           { _id: commentId },
           {
@@ -56,6 +63,8 @@ export const POST = async (req: NextRequest) => {
         );
       }
     } else if (replyId) {
+      // when there is reply Id and no file
+      console.log("when there is reply id and no file");
       const findReply = await comment
         .findOne({ _id: commentId })
         .select("replies");
@@ -66,7 +75,8 @@ export const POST = async (req: NextRequest) => {
         const author: IUser = (await user.findOne({
           _id: replyAuthor.author,
         })) as IUser;
-        await comment.updateOne(
+
+       let res =  await comment.findOneAndUpdate(
           { _id: commentId },
           {
             $push: {
@@ -78,9 +88,12 @@ export const POST = async (req: NextRequest) => {
           },
           { new: true }
         );
+         return NextResponse.json({ message: "reply received", data: res });
       }
     } else {
-      await comment.updateOne(
+      // when there is no file and reply id
+      console.log("no file and reply id");
+      let res=await comment.findOneAndUpdate(
         { _id: commentId },
         {
           $push: {
@@ -92,6 +105,7 @@ export const POST = async (req: NextRequest) => {
         },
         { new: true }
       );
+       return NextResponse.json({ message: "reply received", data: res });
     }
 
     return NextResponse.json({ message: "reply received" });

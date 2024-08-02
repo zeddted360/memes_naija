@@ -1,7 +1,9 @@
 "use client";
-import { ICommentClient, Isession } from "@/app/types/types";
+import { IComment, ICommentClient, Isession } from "@/app/types/types";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { sendFile } from "@/utils/sendFile";
+import { scrollToView } from "@/utils/scroll";
 
 const AddComment = ({
   session,
@@ -14,7 +16,7 @@ const AddComment = ({
   const [error, setError] = useState("");
   const [comment, setComment] = useState<ICommentClient>({
     content: "",
-    files: null,
+    files: [],
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -28,71 +30,97 @@ const AddComment = ({
       }, 2000);
     }
   }, [message]);
+ const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+   let acceptedFiles = e.target.accept.split(",");
+   let files = e.target.files as FileList;
+   let isInvalidType: Boolean = Array.from(files).some((file: File) => {
+     let mimetype = file.type.split("/")[1];
+     return acceptedFiles.includes(mimetype);
+   });
+   if (!isInvalidType) {
+     setError("File format not supported");
+     return;
+   }
+   setComment((prev: ICommentClient) => ({
+     ...prev,
+     files: files,
+   }));
+ };
 
+ const handleText = (e: React.ChangeEvent<HTMLInputElement>) => {
+   const { value } = e.target;
+   setComment((prev) => ({ ...prev, content: value }));
+ };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
+    setMessage("");
+
     if (!session.user) {
+      setError("User session not found. Please log in.");
+      setLoading(false);
       return;
     }
-    const form = e.target as HTMLFormElement;
-    const formData = new FormData(form);
-    formData.append("user", `${session?.user.email}`);
-    formData.append("postId", `${postId}`);
-    formData.append("comment", comment.content);
+
+    if (!comment.content.trim()) {
+      setError("Comment cannot be empty.");
+      setLoading(false);
+      return;
+    }
+
+    const form = e.currentTarget as HTMLFormElement;
+    const formData = new FormData();
+    formData.append("user", session.user.email);
+    formData.append("postId", postId.toString());
+    formData.append("comment", comment.content.trim());
+
     try {
+      sendFile(comment.files, formData);
+
       const res = await fetch(`/api/comment/add`, {
         method: "POST",
         body: formData,
       });
-      const data = await res.json();
-      setComment((prev) => ({
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const data: { message: string; data: IComment } = await res.json();
+
+      if (!data.data || !data.data._id) {
+        throw new Error("Invalid response data");
+      }
+
+      const commentId = data.data._id.toString();
+      setMessage("Comment added successfully!");
+
+      // Reset form and refresh
+      setComment(prev => ({
         ...prev,
-        content: "",
-        files: null,
+        content: "", files: []
       }));
-      router.refresh();
-      setMessage(data.message);
       form.reset();
-      setComment((prev) => ({
-        ...prev,
-        content: "",
-        files: null,
-      }));
+      router.refresh();
+
+      // Scroll to new comment after a short delay
+      setTimeout(() => {
+        scrollToView(commentId);
+      }, 2000);
     } catch (error: any) {
-      console.error(error.message);
+      console.error("Error submitting comment:", error);
+      setError(
+        error.message || "An error occurred while submitting the comment."
+      );
     } finally {
       setLoading(false);
-      setError("error: something went wrong");
-
-      setError("");
     }
   };
-
-  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let acceptedFiles = e.target.accept.split(",");
-    let files = e.target.files as FileList;
-    let isInvalidType: Boolean = Array.from(files).some((file: File) => {
-      let mimetype = file.type.split("/")[1];
-      return acceptedFiles.includes(mimetype);
-    });
-    if (!isInvalidType) {
-      setError("File format not supported");
-      return;
-    }
-    setComment((prev: ICommentClient) => ({
-      ...prev,
-      files: files,
-    }));
-  };
-
-  const handleText = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setComment((prev) => ({ ...prev, content: value }));
-  };
+ 
 
   return (
-    <div className="addComment">
+    <div className="addComment className={}">
       {showMessage && (
         <div
           className={`message absolute p-2 shadow-lg top-[10%] left-[50%] translate-x-[-50%] px-4 rounded-lg text-center  ${

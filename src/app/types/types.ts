@@ -5,6 +5,7 @@ export interface IContext {
 }
 
 export interface Ireplies {
+  _id?: string;
   author: mongoose.Types.ObjectId;
   reply: string;
   file?: [String];
@@ -36,18 +37,13 @@ export interface IComment {
   post: mongoose.Types.ObjectId;
   author: mongoose.Types.ObjectId;
   likes?: Array<mongoose.Types.ObjectId | string>;
-  replies?: Array<{
-    author: mongoose.Types.ObjectId;
-    reply: string;
-    likes?: Array<mongoose.Types.ObjectId>;
-    createdAt: Date;
-  }>;
+  replies?: Array<Ireplies>;
   createdAt?: Date;
   _v: number;
 }
 export interface ICommentClient {
   content: string;
-  files?: FileList | null;
+  files?: FileList | [];
 }
 // to be checked later
 export interface IUser {

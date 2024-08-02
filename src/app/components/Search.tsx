@@ -1,13 +1,16 @@
 'use client';
 import React, { useState } from 'react';
-import styles from './search.module.css';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
+import { Input } from "@/components/ui/input";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 const Search = () => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
+  const [showSearch,setShowSearch] =useState(true)
   const handleSearch = useDebouncedCallback((term: string) => {
     const params = new URLSearchParams(searchParams);
     if (term) {
@@ -20,14 +23,17 @@ const Search = () => {
   }, 300);
 
   return (
-    <div className={styles.Search}>
-      <input
-        className={styles.searchInput}
-        type='text'
-        placeholder='Search'
+    <div className="relative">
+      <Input
         onChange={(e) => handleSearch(e.target.value)}
-        defaultValue={searchParams.get('query')?.toString()}
+        type="text"
+        defaultValue={searchParams.get("query")?.toString()}
+        onFocus={() => setShowSearch(false)}
+        onBlur={() => setShowSearch(true)}
       />
+      <div className="absolute inset-y-0 left-[5%] top-[5%] pl-3 flex items-center ">
+        {showSearch && <FontAwesomeIcon icon={faSearch} />}
+      </div>
     </div>
   );
 };

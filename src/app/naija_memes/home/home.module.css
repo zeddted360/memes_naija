@@ -1,5 +1,4 @@
 .MainHome {
-    /* background-color: orange; */
     width: 100vw;
     height: 100%;
     display: flex;
@@ -12,15 +11,15 @@
    
 }
 .home {
-    background:var( --light-gray);
     width: 100%;
     @apply
     p-2
     rounded-lg
-     md:grid
-    md:grid-cols-2
-    lg:grid-cols-3
-    xl:grid-cols-4
+    flex
+    flex-col
+    gap-2
+    md:grid
+    grid-cols-3
    
 }
 .postList {

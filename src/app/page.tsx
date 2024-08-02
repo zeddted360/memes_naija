@@ -1,24 +1,40 @@
+import { Button } from '@/components/ui/button';
+import { buttonVariants } from "@/components/ui/button";
 
-import styles from './landing.module.css';
 import Link from 'next/link';
 
 export default function Landing() {
   return (
-    <main className={styles.main}>
-      <div className={styles.landingHead}>Naija_Memes</div>
-      <div className={styles.landingBody}>
-        <div className={styles.welcomeMessage}>
-          <h1>
-            <b>Welcome</b> to Naija_memes just laugh and forget your sorrows
-          </h1>
-        </div>
-        <div className={styles.linksContainer}>
-          <Link href={`/naija_memes/signup`}>Join</Link>
-          <Link href='/naija_memes/login'>login</Link>
-          <Link href='/naija_memes/home'>home</Link>
-        </div>
+    <main className="h-screen flex flex-col justify-between">
+      <h1 className="p-2 text-center shadow-lg  font-bold">
+        <p>
+          Welcome to <b className="text-2xl">Memes 9ja</b>
+        </p>
+        <i className="text-sm">where sorrow turn laughter</i>
+      </h1>
+      <div className="laugh_bg  text-primary flex justify-center items-center gap-4 rounded-lg h-[100%]">
+        <Link
+          href={`/naija_memes/signup`}
+          className={buttonVariants({ variant: "outline" })}
+        >
+          Join
+        </Link>
+        <Link
+          href={`/naija_memes/login`}
+          className={buttonVariants({ variant: "outline" })}
+        >
+          login
+        </Link>
+        <Link
+          href={`/naija_memes/home`}
+          className={buttonVariants({ variant: "outline" })}
+        >
+          home
+        </Link>
       </div>
-      <div className={styles.landingFooter}>&copy; Naija_Memes 2024</div>
+      <div className="self-center p-2 text-center shadow-lg">
+        &copy; Naija_Memes 2024
+      </div>
     </main>
   );
 }

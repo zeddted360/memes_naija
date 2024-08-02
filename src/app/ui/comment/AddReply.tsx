@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { baseURL, ICommentClient, Isession } from "@/app/types/types";
+import {
+  baseURL,
+  IComment,
+  ICommentClient,
+  Ireplies,
+  Isession,
+} from "@/app/types/types";
 import { useRouter } from "next/navigation";
 import { scrollToView } from "@/utils/scroll";
+import { sendFile } from "@/utils/sendFile";
 const AddReply = ({
   commentId,
   session,
@@ -24,7 +31,7 @@ const AddReply = ({
   const [error, setError] = useState("");
   const [comment, setComment] = useState<ICommentClient>({
     content: "",
-    files: null,
+    files: [],
   });
   const [showMessage, setShowMessage] = useState(false);
   let isFormValid = () => {
@@ -35,9 +42,11 @@ const AddReply = ({
     e.preventDefault();
     setLoading(true);
     const form = e.target as HTMLFormElement;
-    const formData = new FormData(form);
+    const formData = new FormData();
     formData.append("commentId", commentId);
     formData.append("session", JSON.stringify(session));
+    formData.append("content", comment.content);
+    sendFile(comment.files, formData);
     try {
       const res = await fetch(`${baseURL}/api/comment/reply/add`, {
         method: "POST",
@@ -46,13 +55,20 @@ const AddReply = ({
       if (!res) {
         throw new Error("something went wrong");
       }
-      const data: { message: string } = await res.json();
+      const data: { message: any; data: IComment } = await res.json();
+      const replies = data.data.replies;
+      if (Array.isArray(replies)) {
+        let length = replies.length;
+        let reply = replies[length - 1];
+        scrollToView(reply?._id.toString());
+        console.log('scrolled')
+      }
       setMessage(data.message);
       setLoading(false);
       setComment((prev) => ({
         ...prev,
         content: "",
-        files: null,
+        files: [],
       }));
       form.reset();
       router.refresh();
