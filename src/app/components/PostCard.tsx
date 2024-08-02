@@ -16,6 +16,7 @@ import { getAuthor } from "@/utils/getAuthor";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 
+
 interface IWord extends IPost {
   words: string[];
 }
@@ -47,7 +48,7 @@ const PostCard = async ({
   return (
     <Card className="flex flex-col justify-between ">
       <CardHeader>
-        <CardTitle className="text-lg">
+        <CardTitle className="text-lg text-secondary-foreground">
           {!isWord ? (
             <span
               dangerouslySetInnerHTML={{

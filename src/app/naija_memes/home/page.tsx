@@ -1,15 +1,16 @@
 import React, { Suspense } from "react";
 import styles from "./home.module.css";
 import Link from "next/link";
-import Loading from "@/app/components/Loading";
 import Search from "@/app/components/Search";
 import { IPost } from "@/app/types/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import dynamic from "next/dynamic";
 import { auth } from "../../../../auth";
+import PostCardSkeleton from "@/app/ui/PostCardSkeleton";
+import { post } from "@/models/model";
 const PostCard = dynamic(() => import("@/app/components/PostCard"), {
-  ssr: false,
+  ssr: true,
 });
 
 const getPosts = async (url: String) => {
@@ -27,6 +28,7 @@ const Home = async ({ searchParams }: { searchParams: { query: String } }) => {
   query
     ? (href = `http://localhost:3000/api/post/getPosts?${query}`)
     : (href = "http://localhost:3000/api/post/getPosts");
+
 
   const posts = await getPosts(href);
   let words: string[] = [posts?.words] || [""];
@@ -57,12 +59,13 @@ const Home = async ({ searchParams }: { searchParams: { query: String } }) => {
         </Link>
       </div>
       <div className={styles.home}>
-        {posts &&
-          posts?.message?.map((post: IPost) => (
-            <Suspense key={`${post?._id}`} fallback={<Loading />}>
-              <PostCard {...post} words={words} />
-            </Suspense>
-          ))}
+        {posts.message
+          ? posts?.message?.map((post: IPost) => (
+              <PostCard key={`${post?._id}`} {...post} words={words} />
+            ))
+          :
+          "abcdefghi".split(" ").map((skeleton) => <PostCardSkeleton key={skeleton} />)
+        }
       </div>
     </div>
   );
