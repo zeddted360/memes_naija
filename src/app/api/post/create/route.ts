@@ -16,15 +16,32 @@ export const POST = async (request: NextRequest) => {
     for (const file of files) {
       const fileExtension = file.name.split(".").pop()?.toLowerCase() as string;
       if (!acceptedTypes.includes(fileExtension)) {
-        return NextResponse.json(
-          { message: "Error: File format not accepted" },
-        );
+        return NextResponse.json({
+          message: "Error: File format not accepted",
+        });
       }
     }
 
     // If all files are accepted, upload them
     try {
-      await uploadFile(files, "/post");
+      const fileArr = await uploadFile(files, "/post");
+      const foundAuthor = await user.findOne({ email: author });
+      if (!foundAuthor) {
+        return NextResponse.json(
+          { message: "Error: Author not found" },
+          { status: 404 }
+        );
+      }
+      const result = await post.create({
+        title,
+        content,
+        author: new ObjectId(foundAuthor._id),
+        file: fileArr,
+      });
+      return NextResponse.json({
+        message: "Post created successfully",
+        post: result,
+      });
     } catch (error) {
       console.error("File upload error:", error);
       return NextResponse.json(

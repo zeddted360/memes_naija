@@ -36,21 +36,21 @@ export function CircularProgress({
 
     if (uploadComplete === "true") {
       setIsUploading(false);
-        setUploadProgress(100)
+      setUploadProgress(100);
     }
 
     if (error) {
-        setIsUploading(false);
+      setIsUploading(false);
       setErrorMessage(decodeURIComponent(error));
-        setTimeout(() => {
-            setErrorMessage('')
-        },3000)
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 3000);
     }
   }, [error, uploadComplete, uploading]);
 
   return (
     <>
-      {isUploading && (
+      {
         <div className="absolute z-[1] w-fit rounded-full left-5 top-2 ">
           <div className="relative w-12 h-12">
             <Progress
@@ -58,11 +58,11 @@ export function CircularProgress({
               className="w-full h-full rounded-full"
             />
           </div>
-          <div className="absolute inset-0 flex items-center font-bold  border justify-center">
+          <div className="absolute inset-0 hidden items-center font-bold  border justify-center">
             {uploadProgress}%
           </div>
         </div>
-      )}
+      }
       {errorMessage && (
         <div className="fixed inset-x-0 top-0 p-4 bg-red-500 text-white">
           Error: {errorMessage}

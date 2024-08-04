@@ -24,8 +24,7 @@ const getPosts = async (url: String) => {
 };
 
 const Home = async ({ searchParams }: { searchParams: any }) => {
-  const { query } = searchParams;
-  console.log(searchParams);
+  const { query, uploading } = searchParams;
 
   let href: String;
   query
@@ -39,7 +38,7 @@ const Home = async ({ searchParams }: { searchParams: any }) => {
 
   return (
     <div className={styles.MainHome}>
-      <CircularProgress searchParams={searchParams} />
+      {uploading === "true" && <CircularProgress searchParams={searchParams} />}
       <div className={styles.homeHead}>
         {session && (
           <i className="text-sm font-semibold border rounded-lg p-2">
