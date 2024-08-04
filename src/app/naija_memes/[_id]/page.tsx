@@ -1,4 +1,3 @@
-
 import User from "@/app/components/User";
 import React, { Suspense } from "react";
 import Image from "next/image";
@@ -16,6 +15,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { CommentForm } from "@/app/ui/form/CommentForm";
 
 const fetchPost = async (_id: number) => {
   const res = await fetch(`${baseURL}/api/post/getPost/${_id}`, {
@@ -38,7 +38,7 @@ export default async function Post({ params }: { params: { _id: number } }) {
   const session: Isession = (await auth()) as Isession;
 
   return (
-    <Card className="w-full max-w-4xl mx-auto my-8 shadow-lg">
+    <Card className="w-full  my-2  border">
       <CardHeader>
         <div className="flex justify-between items-center mb-4">
           <Suspense fallback={<AuthorLoading />}>
@@ -67,16 +67,14 @@ export default async function Post({ params }: { params: { _id: number } }) {
             ))}
           </div>
         )}
-        <p className="text-gray-700 leading-relaxed mb-6">
-          {post.message.content}
-        </p>
+        <p className="leading-relaxed mb-6">{post.message.content}</p>
         <div className="mt-8">
-          <h3 className="text-xl font-semibold mb-4">Comments</h3>
+          <hr className="w-full h-2 mb-8" />
           <Comments postId={`${_id}`} session={session} />
         </div>
       </CardContent>
-      <CardFooter>
-        <AddComment postId={_id} session={session} />
+      <CardFooter className="flex justify-center mt-4">
+        <CommentForm postId={_id} session={session} />
       </CardFooter>
     </Card>
   );

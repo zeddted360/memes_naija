@@ -24,7 +24,7 @@ const Comments = async ({
         return (
           <div
             id={item._id.toString()}
-            className="rounded-lg border m-2 p-2"
+            className="w-fit md:w-3/4 rounded-lg border m-2 p-2"
             key={`${item._id}`}
           >
             <Author

@@ -18,20 +18,19 @@ const User = async ({ authorId }: { authorId: string }) => {
   const { profilePic, username } = author.message;
 
   return (
-    <span className="text-gray-700 flex gap-1 justify-center items-center">
+    <span className="flex gap-1 justify-center items-center">
       {profilePic ? (
         <Link
           className="flex gap-2  items-center"
           href={`/naija_memes/profile/${author.message._id}`}
         >
-          {/* <Image
+          <Image
             alt="profile pic"
             width={30}
             height={30}
             className="rounded-full"
             src={`/profile_pic/${profilePic}`}
-          /> */}
-          <p>images here</p>
+          />
           {author && <i> {username}</i>}
         </Link>
       ) : (

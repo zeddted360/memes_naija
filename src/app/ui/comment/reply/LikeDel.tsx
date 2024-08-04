@@ -4,6 +4,14 @@ import React, { useEffect, useState } from "react";
 import { baseURL } from "@/app/types/types";
 import { useRouter } from "next/navigation";
 import { scrollToView } from "@/utils/scroll";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faAngleUp,
+  faComment,
+  faHeart,
+  faImage,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 
 const LikeDelReply = ({
   openReply,
@@ -29,7 +37,7 @@ const LikeDelReply = ({
     if (message) setShowMessage(true);
     setTimeout(() => {
       setShowMessage(false);
-    },2000)
+    }, 2000);
   }, [message]);
 
   const [error, setError] = useState("");
@@ -60,8 +68,7 @@ const LikeDelReply = ({
   };
   const handleDelete = async () => {};
 
-  const handleLike = async () => { };
-  
+  const handleLike = async () => {};
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -78,7 +85,7 @@ const LikeDelReply = ({
       });
       if (!res) {
         throw new Error("something went wrong");
-      };
+      }
       const data: { message: any; data: IComment } = await res.json();
       const replies = data.data.replies;
       if (Array.isArray(replies)) {
@@ -120,63 +127,21 @@ const LikeDelReply = ({
         </div>
       )}
       <div className="utilityContainer flex justify-between  ">
-        {" "}
         {/* like */}
         <button>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            className="size-6"
-          >
-            <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
-          </svg>
+          <FontAwesomeIcon icon={faHeart} />
         </button>
         {/* comment */}
         <button onClick={() => setShowComment((prev) => !prev)}>
           {showComment ? (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="size-6"
-            >
-              <path
-                fillRule="evenodd"
-                d="M12.53 16.28a.75.75 0 0 1-1.06 0l-7.5-7.5a.75.75 0 0 1 1.06-1.06L12 14.69l6.97-6.97a.75.75 0 1 1 1.06 1.06l-7.5 7.5Z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <FontAwesomeIcon icon={faAngleUp} />
           ) : (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="size-6"
-            >
-              <path
-                fillRule="evenodd"
-                d="M5.337 21.718a6.707 6.707 0 0 1-.533-.074.75.75 0 0 1-.44-1.223 3.73 3.73 0 0 0 .814-1.686c.023-.115-.022-.317-.254-.543C3.274 16.587 2.25 14.41 2.25 12c0-5.03 4.428-9 9.75-9s9.75 3.97 9.75 9c0 5.03-4.428 9-9.75 9-.833 0-1.643-.097-2.417-.279a6.721 6.721 0 0 1-4.246.997Z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <FontAwesomeIcon icon={faComment} />
           )}
         </button>
         {/* delete */}
         <button>
-          {" "}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            className="size-6"
-          >
-            <path
-              fillRule="evenodd"
-              d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z"
-              clipRule="evenodd"
-            />
-          </svg>
+          <FontAwesomeIcon icon={faTrash} />
         </button>
       </div>
       <br />
@@ -185,18 +150,7 @@ const LikeDelReply = ({
         <div className="formContainer  mt-2 p-1 bg-[var(--bg-light)] rounded-lg border text-[var(--cl-light)]  w-[100%]">
           <form onSubmit={handleSubmit} className="flex items-center gap-2 ">
             <label htmlFor="files" title="upload photos">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="size-6"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M1.5 6a2.25 2.25 0 0 1 2.25-2.25h16.5A2.25 2.25 0 0 1 22.5 6v12a2.25 2.25 0 0 1-2.25 2.25H3.75A2.25 2.25 0 0 1 1.5 18V6ZM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0 0 21 18v-1.94l-2.69-2.689a1.5 1.5 0 0 0-2.12 0l-.88.879.97.97a.75.75 0 1 1-1.06 1.06l-5.16-5.159a1.5 1.5 0 0 0-2.12 0L3 16.061Zm10.125-7.81a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Z"
-                  clipRule="evenodd"
-                />
-              </svg>
+              <FontAwesomeIcon icon={faImage} />
             </label>
             <input
               multiple

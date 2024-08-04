@@ -1,7 +1,9 @@
 "use client";
 import { IComment } from "@/app/types/types";
 import React, { useState } from "react";
-// import Image from "next/image";
+import Image from "next/image";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleDown, faAngleUp } from "@fortawesome/free-solid-svg-icons";
 
 const Images = ({ item }: { item: IComment }) => {
   const [showMore, setShowMore] = useState(false);
@@ -23,8 +25,7 @@ const Images = ({ item }: { item: IComment }) => {
               className="imgContainer  p-1 overflow-hidden rounded-lg w-full h-[9em] relative"
               key={file}
             >
-              {/* <Image fill alt="img comments" src={`/comment/${file}`} /> */}
-              <p>images here</p>
+              <Image fill alt="img comments" src={`/comment/${file}`} />
             </div>
           );
         })}
@@ -33,7 +34,11 @@ const Images = ({ item }: { item: IComment }) => {
           className="mt-2 px-2 py-1 bg-[var(--bg-light)] font-sm text-white rounded-lg"
           onClick={() => setShowMore((prev) => !prev)}
         >
-          {showMore ? "Show Less" : "Show More"}
+          {showMore ? (
+            <FontAwesomeIcon icon={faAngleUp} />
+          ) : (
+            <FontAwesomeIcon icon={faAngleDown} />
+          )}
         </button>
       )}
     </div>

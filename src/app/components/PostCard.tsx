@@ -16,7 +16,6 @@ import { getAuthor } from "@/utils/getAuthor";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 
-
 interface IWord extends IPost {
   words: string[];
 }
@@ -43,7 +42,7 @@ const PostCard = async ({
       </h1>
     );
   }
-  const fetchedAuthor:IUser = await getAuthor(author.toString());
+  const fetchedAuthor: IUser = await getAuthor(author.toString());
 
   return (
     <Card className="flex flex-col justify-between ">
@@ -63,19 +62,24 @@ const PostCard = async ({
           <FontAwesomeIcon icon={faUser} /> <i>{fetchedAuthor.username}</i>
         </CardDescription>
       </CardHeader>
-      <CardContent className="text-md" >
+      <CardContent className="text-md">
         {file?.length !== 0 && (
           <div className={styles.mediaContainer}>
-            {file?.map((item, index) => (
-              <div key={index}>
-                <Image
-                  alt="logo"
-                  className='{styles.img}'
-                  src="/images/memesLogo.jpeg"
-                  fill
-                />
-              </div>
-            ))}
+            {file?.map((item, index) => {
+              console.log(item);
+              return (
+                <>
+                  <div key={index}>
+                    <Image
+                      alt="logo"
+                      className="{styles.img}"
+                      src="/images/memesLogo.jpeg"
+                      fill
+                    />
+                  </div>
+                </>
+              );
+            })}
           </div>
         )}
         <div className="{styles?.detailsPage}">

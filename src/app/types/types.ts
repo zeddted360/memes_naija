@@ -3,7 +3,9 @@ export const baseURL = "http://localhost:3000";
 export interface IContext {
   params: { _id: string };
 }
-
+export interface Itarget extends Event {
+  innerText: string;
+}
 export interface Ireplies {
   _id?: string;
   author: mongoose.Types.ObjectId;

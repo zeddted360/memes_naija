@@ -9,6 +9,7 @@ import dynamic from "next/dynamic";
 import { auth } from "../../../../auth";
 import PostCardSkeleton from "@/app/ui/PostCardSkeleton";
 import { post } from "@/models/model";
+import { CircularProgress } from "@/app/components/CircularProgress";
 const PostCard = dynamic(() => import("@/app/components/PostCard"), {
   ssr: true,
 });
@@ -22,13 +23,14 @@ const getPosts = async (url: String) => {
   return res.json();
 };
 
-const Home = async ({ searchParams }: { searchParams: { query: String } }) => {
+const Home = async ({ searchParams }: { searchParams: any }) => {
   const { query } = searchParams;
+  console.log(searchParams);
+
   let href: String;
   query
     ? (href = `http://localhost:3000/api/post/getPosts?${query}`)
     : (href = "http://localhost:3000/api/post/getPosts");
-
 
   const posts = await getPosts(href);
   let words: string[] = [posts?.words] || [""];
@@ -37,6 +39,7 @@ const Home = async ({ searchParams }: { searchParams: { query: String } }) => {
 
   return (
     <div className={styles.MainHome}>
+      <CircularProgress searchParams={searchParams} />
       <div className={styles.homeHead}>
         {session && (
           <i className="text-sm font-semibold border rounded-lg p-2">
@@ -63,9 +66,9 @@ const Home = async ({ searchParams }: { searchParams: { query: String } }) => {
           ? posts?.message?.map((post: IPost) => (
               <PostCard key={`${post?._id}`} {...post} words={words} />
             ))
-          :
-          "abcdefghi".split(" ").map((skeleton) => <PostCardSkeleton key={skeleton} />)
-        }
+          : "abcdefghi"
+              .split(" ")
+              .map((skeleton) => <PostCardSkeleton key={skeleton} />)}
       </div>
     </div>
   );
