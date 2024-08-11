@@ -55,11 +55,12 @@ const SignUpUi = ({ styles }: { styles: any }) => {
       if (!res.ok) {
         setLoading(false);
         throw new Error("Something went wrong");
+        return
       }
       const data = await res.json();
       window.alert(data.message);
       setLoading(false);
-      router.push("/naija_memes/home");
+      router.push("/api/auth/signin");
     } catch (error: any) {
       setLoading(false);
       console.log(error.message);

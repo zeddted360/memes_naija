@@ -13,8 +13,7 @@ export const POST = auth(async function POST(request: NextRequest) {
   const password = formData.get("password") as string;
 
   const file: File | null = formData.get("profilePic") as File;
-
-  if (file) {
+  if (file?.name !='') {
     const profilePic = await upLoadProfilePic(file);
     try {
       connectDB();

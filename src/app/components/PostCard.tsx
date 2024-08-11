@@ -1,5 +1,4 @@
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import {
   Card,
@@ -10,12 +9,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import styles from "./postcard.module.css";
 import { IPost, IUser } from "@/app/types/types";
 import { getAuthor } from "@/utils/getAuthor";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
-
+import dynamic from "next/dynamic";
+const Showmore = dynamic(() => import("../ui/Showmore"),{ssr:false});
 interface IWord extends IPost {
   words: string[];
 }
@@ -55,32 +54,16 @@ const PostCard = async ({
               }}
             />
           ) : (
-            title.slice(0, 50)
+            title?.slice(0, 50)
           )}
         </CardTitle>
         <CardDescription>
           <FontAwesomeIcon icon={faUser} /> <i>{fetchedAuthor.username}</i>
         </CardDescription>
       </CardHeader>
-      <CardContent className="text-md">
-        {file?.length !== 0 && (
-          <div className={styles.mediaContainer}>
-            {file?.map((item, index) => {
-              console.log(item);
-              return (
-                <>
-                  <div key={index}>
-                    <Image
-                      alt="logo"
-                      className="{styles.img}"
-                      src="/images/memesLogo.jpeg"
-                      fill
-                    />
-                  </div>
-                </>
-              );
-            })}
-          </div>
+      <CardContent className={`rounded-sm ${file && file.length > 0 && 'border'} grid gap-2 p-1`}>
+        {file && file.length > 0 && (
+            <Showmore file={file} />
         )}
         <div className="{styles?.detailsPage}">
           {!isWord ? (
@@ -97,7 +80,7 @@ const PostCard = async ({
       </CardContent>
       <CardFooter>
         <Link href={`/naija_memes/${_id}`}>
-          <Button>Read more...</Button>
+          <Button className="mt-8">Read more...</Button>
         </Link>
       </CardFooter>
     </Card>

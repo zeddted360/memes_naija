@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (req: NextRequest, context: any) => {
   const _id = context.params._id;
+  console.log('the id is ',_id)
   try {
     const result = await user.findById(_id);
     if (result) {

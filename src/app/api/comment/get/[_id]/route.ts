@@ -5,10 +5,12 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (req: NextRequest, context: IContext) => {
   const { _id } = context.params;
-
+  console.log(_id);
   try {
     await connectDB();
-    const res = await comment.find({ post: _id }).sort({ createdAt: -1 });
+    const res = await comment
+      .find({ $or: [{ post: _id }, {_id: _id }] })
+      .sort({ createdAt: -1 });
     return NextResponse.json({ message: res }, { status: 200 });
   } catch (error: any) {
     console.log("error: ", error.message);

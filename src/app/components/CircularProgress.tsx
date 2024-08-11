@@ -16,7 +16,7 @@ export function CircularProgress({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const { uploading, uploadComplete, error } = searchParams;
-
+  console.log(uploading, uploadComplete);
   useEffect(() => {
     if (uploading === "true") {
       setIsUploading(true);
@@ -51,15 +51,9 @@ export function CircularProgress({
   return (
     <>
       {
-        <div className="absolute z-[1] w-fit rounded-full left-5 top-2 ">
-          <div className="relative w-12 h-12">
-            <Progress
-              value={uploadProgress}
-              className="w-full h-full rounded-full"
-            />
-          </div>
-          <div className="absolute inset-0 hidden items-center font-bold  border justify-center">
-            {uploadProgress}%
+        <div className=" absolute  z-[1] w-full left-0 top-0 ">
+          <div className="w-full">
+            <Progress className="h-1.5 border" value={uploadProgress} />
           </div>
         </div>
       }

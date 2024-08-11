@@ -31,7 +31,7 @@ const Comments = async ({
               createdAt={new Date(`${item.createdAt}`)}
               author={item.author.toString()}
             />
-            <p className="p-2">{item.content}</p>
+            <p className="p-2 text-wrap ">{item.content}</p>
             <Images item={item} />
             <LikeDel
               author={item.author.toString()}

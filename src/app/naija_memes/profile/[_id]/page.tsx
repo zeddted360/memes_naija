@@ -13,24 +13,33 @@ const page = async ({ params }: { params: { _id: string } }) => {
   const { _id } = params;
   const user = await getprofile(_id);
   return (
-    <div className="w-full h-fit p-2">
+    <div className="w-full h-screen p-2 ">
       <div className="img  p-2">
-        <Link href={`/profile_pic/${user.message.profilePic}`}>
-          <Image
-            className="rounded-full border-2 object-cover"
-            width={400}
-            height={400}
-            alt="profilepic"
-            src={`/profile_pic/${user.message.profilePic}`}
-          />
-        </Link>
+        {
+          <div className="relative aspect-square border-2 rounded-full md:mx-auto overflow-hidden md:max-w-md md:max-h-md">
+            {!user.message.profilePic ? (
+              <FontAwesomeIcon className={`w-fit  h-fit`} icon={faUser} />
+            ) : (
+              <Link
+                href={`/profile_pic/${
+                  user.message.profilePic ? user.message.profilePic : ""
+                }`}
+              >
+                <Image
+                  className="object-cover"
+                  fill
+                  alt="profilepic"
+                  src={`/profile_pic/${user.message.profilePic}`}
+                />
+              </Link>
+            )}
+          </div>
+        }
         <h1 className="text-2xl font-bold">{user.message.username}</h1>
         <hr />
         <p>
-          <i className="mr-2">
-            <FontAwesomeIcon icon={faUser} />
-          </i>
-          {user.message.email}
+          email
+          <i className="ml-2 text-xs">{user.message.email}</i>
         </p>
         <p className="text-sm">
           Joined

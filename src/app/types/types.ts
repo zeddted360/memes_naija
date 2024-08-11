@@ -53,6 +53,7 @@ export interface IUser {
   username: string;
   email: string;
   password: string;
+  profilePic?: string;
   confirmPassword?: string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -66,7 +67,6 @@ export interface IUserModel extends IUser {
   confirmPassword?: string;
   createdAt?: Date;
   updatedAt?: Date;
-  profilePic?: BinaryData;
 }
 
 export interface IMetaData {

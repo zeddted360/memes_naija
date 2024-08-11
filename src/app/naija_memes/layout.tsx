@@ -19,11 +19,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="bg-red 100">
-      <div >
-        <Header />
+    <div className="relative">
+      <div className="fixed w-full top-0 left-0 z-50">
+        <Header/>
       </div>
-      <div className=''>{children}</div>
+      <div className="pt-[16%] md:pt-[10%] lg:pt-[8%] mx-auto">{children}</div>
       <Footer />
     </div>
   );

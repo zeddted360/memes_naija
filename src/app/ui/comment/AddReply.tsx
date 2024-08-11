@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFile, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { faFile, faImage, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import React, { useEffect, useState } from "react";
 import {
   baseURL,
@@ -37,8 +37,8 @@ const AddReply = ({
   });
   const [showMessage, setShowMessage] = useState(false);
   let isFormValid = () => {
-    if (comment.content) return true;
-    return false;
+    if (comment.content) return false;
+    return true;
   };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -56,6 +56,7 @@ const AddReply = ({
       });
       if (!res) {
         throw new Error("something went wrong");
+        return;
       }
       const data: { message: any; data: IComment } = await res.json();
       const replies = data.data.replies;
@@ -122,10 +123,10 @@ const AddReply = ({
       <form
         id="reply"
         onSubmit={handleSubmit}
-        className="flex justify-between items-center gap-2 w-3/4 p-4 m-2"
+        className="flex  justify-between items-center gap-2 w-3/4 p-4 m-2"
       >
         <label htmlFor="files" title="upload photos">
-          <FontAwesomeIcon icon={faFile} />
+          <FontAwesomeIcon className="h-10 w-10" icon={faImage} />
         </label>
         <input
           multiple
@@ -147,7 +148,7 @@ const AddReply = ({
           autoFocus={openReply ? true : false}
         />
         <button
-          disabled={!isFormValid()}
+          disabled={isFormValid()}
           className={
             isFormValid()
               ? `bg-[--bg-light] rounded-lg px-1 text-white`
@@ -155,7 +156,11 @@ const AddReply = ({
           }
           type="submit"
         >
-          {loading ? "Submitting... " : <FontAwesomeIcon icon={faPaperPlane} />}
+          {loading ? (
+            "Submitting... "
+          ) : (
+            <FontAwesomeIcon className="h-10 w-10" icon={faPaperPlane} />
+          )}
         </button>
       </form>
     </div>

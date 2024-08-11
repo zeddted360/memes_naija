@@ -11,7 +11,6 @@ import {
 import AddReply from "../AddReply";
 import { useFetchAuthor } from "@/context/useFetchAuthor";
 import { timeAgo } from "@/utils/timeAgo";
-import LikeDelReply from "../reply/LikeDel";
 import { scrollToView } from "@/utils/scroll";
 import Image from "next/image";
 import Link from "next/link";
@@ -24,7 +23,10 @@ import {
   faAngleUp,
   faComment,
   faHeart,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
+import mongoose from "mongoose";
+import ReplyForm from "../reply/ReplyForm";
 
 const LikeDel = ({
   commentId,
@@ -39,28 +41,41 @@ const LikeDel = ({
   postId: string;
   session: Isession;
 }) => {
-  const [likes, setLikes] = useState<number | undefined>();
-  const [isLiked, setIsLiked] = useState<boolean>(false);
+  const [likes, setLikes] = useState<
+    (mongoose.Types.ObjectId | string)[] | undefined
+  >();
+  const [likeReply, setLikesReply] = useState<any>();
+  // console.log(likeReply);
   const [openReply, setOpenReply] = useState(false);
   const [toggleReplies, setToggleReplies] = useState(false);
   const [replies, setReplies] = useState<any>([]);
+  const [message, setMessage] = useState("");
+  const [showMessage, setShowMessage] = useState<Boolean>(false);
+
   const router = useRouter();
+  const [showComment, setShowComment] = useState<{ [key: string]: boolean }>(
+    {}
+  );
+
   const Comments: { message: Array<IComment> } = useMemo(
     () => JSON.parse(comments),
     [comments]
   );
   useEffect(() => {
-    const currentComment = Comments.message.find(
+    const currentComment: IComment | undefined = Comments.message.find(
       (comment) => comment._id.toString() === commentId
     );
     if (currentComment) {
-      setIsLiked(currentComment.likes?.includes(author) || false);
-      setLikes(currentComment.likes?.length);
+      setLikes(currentComment.likes);
       setReplies(currentComment?.replies);
     }
-  }, [Comments.message, author, commentId]);
+    if (message) setShowMessage(true);
+    setTimeout(() => {
+      setShowMessage(false);
+    }, 2000);
+  }, [Comments.message, message, author, commentId]);
 
-  const handleDelete = async () => {
+  const handleDeleteComment = async () => {
     try {
       const res = await fetch(
         `${baseURL}/api/comment/delete/${commentId + "," + postId}`,
@@ -75,38 +90,130 @@ const LikeDel = ({
     }
   };
 
-  const handleLike = async () => {
+  const handleDeleteReply = async (replyId: string) => {
+    try {
+      const res = await fetch(`/api/comment/reply/delete`, {
+        method: "PATCH",
+        body: JSON.stringify({ replyId, commentId }),
+      });
+      if (!res.ok) {
+        throw new Error("something wemt wrong");
+        return;
+      }
+      const data: { message: string } = await res.json();
+      console.log(data.message);
+      router.refresh();
+    } catch (error: any) {
+      console.error(error.message);
+    }
+  };
+  // fetch all authors to handle likes
+  const { authors }: { authors: { message: IUser[] } } =
+    useFetchAuthor(`/api/user/getUsers`);
+  let foundAuthor: any;
+  if (authors) {
+    foundAuthor = authors.message.find(
+      (user: IUser) => user.email === session?.user.email
+    );
+  }
+
+  let isLiked: () => boolean = () => {
+    if (foundAuthor) {
+      if (likes?.includes(foundAuthor._id.toString())) return true;
+      return false;
+    }
+    return false;
+  };
+
+  let isLikedReply: (replyId: string) => boolean |undefined = (replyId: string) => {
+    if (foundAuthor) {
+      const foundReply: Ireplies = replies.find(
+        (element: Ireplies) => element._id?.toString() === replyId
+      );
+      if (foundReply.likes && Array.isArray(foundReply.likes)) {
+        let liked = foundReply.likes.some(
+          (element: string) => element.toString() === foundAuthor._id.toString()
+        );
+        if (liked) return liked;
+        return false;
+      }
+    }
+  };
+
+  const handleLikeComment = async () => {
     try {
       const res = await fetch(
-        `${baseURL}/api/comment/${isLiked ? "unlike" : "like"}/${commentId}`,
+        `${baseURL}/api/comment/${isLiked() ? "unlike" : "like"}/${commentId}`,
         {
           method: "PATCH",
           body: JSON.stringify({ session }),
         }
       );
       const data: { message: IComment } = await res.json();
-      setLikes(data.message.likes?.length);
-      setIsLiked(!isLiked);
+      setLikes(data.message.likes);
       router.refresh();
     } catch (error: any) {
       console.error("error: ", error.message);
     }
   };
-  const { authors }: { authors: { message: Array<IUser> } } = useFetchAuthor(
-    `${baseURL}/api/user/getUsers`
-  );
+
+  const handleLikeReply = async (replyId: string) => {
+    try {
+      const response = await fetch(
+        `${baseURL}/api/comment/reply/${
+          isLikedReply(replyId) ? "unlike" : "like"
+        }`,
+        {
+          method: "PATCH",
+          body: JSON.stringify({ commentId, session, replyId }),
+        }
+      );
+      if (!response.ok) {
+        throw new Error("something went wrong");
+        return;
+      }
+      const data = await response.json();
+      router.refresh();
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
+
+  const handleToggleReply = (_id: string) => {
+    setShowComment((prev) => ({
+      ...prev,
+      [_id]: !prev[_id],
+    }));
+  };
+
   return (
     <>
       {" "}
-      <div className="rounded-lg flex justify-evenly items-center p-2">
+      <div className=" rounded-lg flex justify-evenly items-center p-2">
+        {showMessage && (
+          <div
+            className={`message absolute p-2 z-11 shadow-lg top-[50%] translate-y-[-50%] left-[50vh] translate-x-[-50%] px-4 rounded-lg text-center  ${
+              message.includes("error")
+                ? "bg-red-200 text-red-800"
+                : "text-lg bg-green-200  text-green-800"
+            }`}
+          >
+            {!message.includes("error") && (
+              <input type="checkbox" readOnly defaultChecked={true} />
+            )}
+            <span className="m-1">{message}</span>
+          </div>
+        )}
         {/* Like button */}
         <Button
           variant={"outline"}
-          className="flex gap-1 items-center justify-between"
-          onClick={handleLike}
+          className={`flex gap-1 items-center justify-between ${
+            likes?.includes(foundAuthor?._id.toString()) ? "text-blue-500" : ""
+          }`}
+          onClick={handleLikeComment}
         >
-          {likes !== undefined && likes > 0 && (
-            <i className="text-sm">{likes}</i>
+          {likes && likes?.length > 0 && (
+            <i className="text-sm">{likes?.length}</i>
           )}
           <FontAwesomeIcon icon={faHeart} />
         </Button>
@@ -136,7 +243,7 @@ const LikeDel = ({
         <Alert
           title="This comment will be deleted"
           warning="This cannot be undone once deleted"
-          handledelete={handleDelete}
+          handledelete={handleDeleteComment}
         />
       </div>
       {/* form for replies to comment */}
@@ -150,32 +257,54 @@ const LikeDel = ({
           }}
         >
           {toggleReplies ? (
-            <FontAwesomeIcon icon={faAngleDown} />
-          ) : (
             <FontAwesomeIcon icon={faAngleUp} />
+          ) : (
+            <FontAwesomeIcon icon={faAngleDown} />
           )}
         </button>
         {replies &&
           toggleReplies &&
           replies.map((item: any, index: number) => {
             const foundAuthor = authors?.message.find(
-              (author) => author._id?.toString() === item.author.toString()
+              (author) => author._id?.toString() === item?.author?.toString()
             );
             const username = foundAuthor?.username;
             const usernameLength = username?.length || 0;
             return (
               <div
                 id={`${item._id}`}
-                className="p-2 m-2 rounded-lg shadow-md hover:bg-[var(--dark-gray)] w-[50%]"
+                className="p-2  m-2 rounded-lg shadow-md"
                 key={index}
               >
-                <div className="authors flex justify-between items-center">
-                  <Link href={`/naija_memes/profile/${foundAuthor?._id}`}>
-                    {" "}
-                    <i className=" text-sm">{foundAuthor?.username}</i>
-                  </Link>
+                <div className="authors flex justify-between items-center ">
+                  {foundAuthor?.profilePic ? (
+                    <div
+                      onClick={() => {
+                        router.push(`/naija_memes/profile/${foundAuthor?._id}`);
+                      }}
+                      className="user-image cursor-pointer flex gap-x-1"
+                    >
+                      <div className="image-container border-1 relative p-4 aspect-square overflow-hidden rounded-full">
+                        <Image
+                          alt="profileImage"
+                          fill
+                          className="object-cover"
+                          src={`/profile_pic/${foundAuthor?.profilePic}`}
+                        />
+                      </div>
+                      <i className=" text-sm">{foundAuthor?.username}</i>
+                    </div>
+                  ) : (
+                    <div className="user-image flex gap-x-1 ">
+                      <FontAwesomeIcon
+                        className="border rounded-full p-2"
+                        icon={faUser}
+                      />
+                      <i className=" text-sm">{foundAuthor?.username}</i>
+                    </div>
+                  )}
                   <i className=" text-sm">
-                    {timeAgo(new Date(), new Date(item.createdAt))}
+                    {timeAgo(new Date(), new Date(item?.createdAt))}
                   </i>
                 </div>
 
@@ -211,12 +340,49 @@ const LikeDel = ({
                     </p>
                   )}
                 </div>
-                <LikeDelReply
-                  commentId={commentId}
-                  session={session}
-                  openReply={openReply}
-                  replyId={item._id.toString()}
-                />
+                {/* like reply and delete section */}
+                <div className="utilityContainer flex justify-between  ">
+                  {/* like */}
+                  <Button
+                    onClick={() => handleLikeReply(item._id.toString())}
+                    className={`flex gap-x-1 ${
+                      isLikedReply(item._id.toString()) ? "text-blue-500" : ""
+                    }`}
+                    variant={"outline"}
+                  >
+                    {item.likes.length > 0 && <i>{item.likes.length}</i>}
+                    <FontAwesomeIcon icon={faHeart} />
+                  </Button>
+                  {/* comment */}
+                  <Button
+                    variant={"outline"}
+                    onClick={() => handleToggleReply(`${item._id}`)}
+                  >
+                    {showComment[item._id.toString()] ? (
+                      <FontAwesomeIcon icon={faAngleUp} />
+                    ) : (
+                      <FontAwesomeIcon icon={faComment} />
+                    )}
+                  </Button>
+                  {/* delete */}
+                  <Alert
+                    title="You are about to delete this comment"
+                    warning="it cannot be undone once deleted"
+                    handledelete={async () =>
+                      handleDeleteReply(item._id.toString())
+                    }
+                  />
+                </div>
+                {showComment[item._id.toString()] && (
+                  <ReplyForm
+                    handleToggleReply={() => handleToggleReply(`${item._id}`)}
+                    commentId={commentId}
+                    session={session}
+                    replyId={`${item._id}`}
+                    setShowMessage={setShowMessage}
+                    setMessage={setMessage}
+                  />
+                )}
               </div>
             );
           })}

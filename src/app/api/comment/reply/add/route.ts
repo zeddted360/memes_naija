@@ -11,7 +11,6 @@ export const POST = async (req: NextRequest) => {
   const isFile = files.some((file: File) => file.name !== "");
   const foundAuthor = await user.findOne({ email: Session.user.email });
   console.log("its comming here", replyId);
-
   try {
     if (isFile) {
       //when there is a file

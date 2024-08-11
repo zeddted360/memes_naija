@@ -1,8 +1,16 @@
-'use client';
-import React, { useState, useEffect, useRef } from 'react';
-import styles from './circularLoading.module.css';
+"use client";
+import React, { useState, useEffect, useRef } from "react";
+import styles from "./circularLoading.module.css";
 
-const CircularLoading = ({ loading, startTime, endTime }: { loading: boolean; startTime: number; endTime: number }) => {
+const CircularLoading = ({
+  loading,
+  startTime,
+  endTime,
+}: {
+  loading: boolean;
+  startTime: number;
+  endTime: number;
+}) => {
   const elementRef = useRef<HTMLSpanElement>(null);
   const intervalRef = useRef<number | null>(null);
   const [count, setCount] = useState<number>(0);
@@ -32,7 +40,7 @@ const CircularLoading = ({ loading, startTime, endTime }: { loading: boolean; st
     } else if (!loading) {
       setCount(100);
       if (elementRef.current) {
-        elementRef.current.textContent = '100%';
+        elementRef.current.textContent = "100%";
       }
     }
   }, [loading, startTime, endTime]);
@@ -41,15 +49,18 @@ const CircularLoading = ({ loading, startTime, endTime }: { loading: boolean; st
     <div className={styles.container}>
       <div
         style={{
-          background: `conic-gradient(var(--bg-light) ${count * 3.6}deg, #ddd 0deg)`,
+          background: `conic-gradient(var(--bg-light) ${
+            count * 3.6
+          }deg, #ddd 0deg)`,
         }}
         className={styles.circularProgress}
       >
-        <span ref={elementRef} className={styles.progressValue}>0%</span>
+        <span ref={elementRef} className={styles.progressValue}>
+          0%
+        </span>
       </div>
     </div>
   );
 };
 
 export default CircularLoading;
-

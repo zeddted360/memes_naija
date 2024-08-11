@@ -88,7 +88,7 @@ export function CommentForm({
       // Simulating file upload with progress
       const totalSteps = 10;
       for (let i = 1; i <= totalSteps; i++) {
-        await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate delay
+        await new Promise((resolve) => setTimeout(resolve, 100)); // Simulate delay
         setProgress((i / totalSteps) * 100);
       }
       // Reset progress after completion

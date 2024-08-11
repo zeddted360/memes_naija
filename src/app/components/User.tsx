@@ -18,29 +18,26 @@ const User = async ({ authorId }: { authorId: string }) => {
   const { profilePic, username } = author.message;
 
   return (
-    <span className="flex gap-1 justify-center items-center">
-      {profilePic ? (
+    <div className="flex gap-1  aspect-square  justify-center items-center">
+      {profilePic && (
         <Link
-          className="flex gap-2  items-center"
+          className="flex rounded-full gap-2 pr-2  items-center"
           href={`/naija_memes/profile/${author.message._id}`}
         >
-          <Image
-            alt="profile pic"
-            width={30}
-            height={30}
-            className="rounded-full"
-            src={`/profile_pic/${profilePic}`}
-          />
+          <div className="relative overflow-hidden p-4 border-3 rounded-full ">
+            <Image alt="profile pic" fill src={`/profile_pic/${profilePic}`} />
+          </div>
           {author && <i> {username}</i>}
         </Link>
-      ) : (
-        <Link href={`/naija_memes/profile/${author._id}`}>
+      )}
+      {!profilePic && (
+        <Link href={`/naija_memes/profile/${author.message._id}`}>
           {" "}
           <FontAwesomeIcon style={{ width: 30, height: 30 }} icon={faUser} />
           {author && <i> {username}</i>}
         </Link>
       )}
-    </span>
+    </div>
   );
 };
 export default User;
