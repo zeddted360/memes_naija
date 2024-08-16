@@ -57,9 +57,9 @@ const PostCard = async ({
             title?.slice(0, 50)
           )}
         </CardTitle>
-        <CardDescription>
+       { fetchedAuthor && <CardDescription>
           <FontAwesomeIcon icon={faUser} /> <i>{fetchedAuthor.username}</i>
-        </CardDescription>
+        </CardDescription>}
       </CardHeader>
       <CardContent className={`rounded-sm ${file && file.length > 0 && 'border'} grid gap-2 p-1`}>
         {file && file.length > 0 && (

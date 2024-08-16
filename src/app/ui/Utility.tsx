@@ -9,10 +9,9 @@ import { useFetchAuthor } from "@/context/useFetchAuthor";
 import { useRouter } from "next/navigation";
 import { Alert } from "./Alert";
 
-
 const Utility = ({ params, session }: { params: string; session: string }) => {
   const router = useRouter();
-  
+
   const resource: { post: IPost } = useMemo(() => JSON.parse(params), [params]);
   const [likes, setLikes] = useState<mongoose.Types.ObjectId[] | undefined>();
   const { post } = resource;
@@ -60,10 +59,18 @@ const Utility = ({ params, session }: { params: string; session: string }) => {
         .then((data) => console.log(data))
         .catch((err: any) => console.log(err.message));
     }
-    router.push('/naija_memes/home');
+    router.push("/naija_memes/home");
   };
+  let postedBy;
+  if (authors) {
+    postedBy = authors.message.find(
+      (item: IUser) =>item._id && item._id.toString() === post.author.toString()
+    );
+  };
+  // console.log(foundUser?._id , post?.author);
+
   return (
-    <div className="flex justify-between gap-4 mb-4">
+    <div className="flex justify-around gap-4 mb-4">
       {post && (
         <>
           <Button
@@ -73,7 +80,9 @@ const Utility = ({ params, session }: { params: string; session: string }) => {
             } items-center gap-2`}
             variant="outline"
           >
-            {likes && likes.length > 0 && <i className="text-sm">{likes.length}</i>}
+            {likes && likes.length > 0 && (
+              <i className="text-sm">{likes.length}</i>
+            )}
             <FontAwesomeIcon icon={faHeart} />{" "}
           </Button>
           <a href="#comment-form">
@@ -81,7 +90,16 @@ const Utility = ({ params, session }: { params: string; session: string }) => {
               <FontAwesomeIcon icon={faComment} />
             </Button>
           </a>
-          <Alert handledelete={async()=>handleDelete()} title="This post will be deleted" warning="This cannot be undone once deleted"/>
+          {
+            (foundUser && foundUser._id ===
+            post.author && (
+              <Alert
+                handledelete={async () => handleDelete()}
+                title="This post will be deleted"
+                warning="This cannot be undone once deleted"
+              />
+            ))
+          }
         </>
       )}
     </div>
