@@ -16,7 +16,6 @@ export const fetchAuthor = async (authorId: string) => {
 const User = async ({ authorId }: { authorId: string }) => {
   const author = await fetchAuthor(authorId);
   const { profilePic, username } = author.message;
-
   return (
     <div className="flex gap-1  aspect-square  justify-center items-center">
       {profilePic && (

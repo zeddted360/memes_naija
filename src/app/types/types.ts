@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 export const baseURL = "http://localhost:3000";
+export const serverUrl = "http://localhost:8080";
 export interface IContext {
   params: { _id: string };
 }

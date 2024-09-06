@@ -1,19 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile } from "fs/promises";
-import path from "path";
 import { connectDB } from "@/utils/connectDB";
 import { user } from "@/models/model";
 import { auth } from "../../../../auth";
 import { upLoadProfilePic } from "@/utils/uploadProfilePic";
+import bcrpyt from "bcrypt";
+import { IUser } from "@/app/types/types";
 
 export const POST = auth(async function POST(request: NextRequest) {
   const formData = await request.formData();
   const username = formData.get("username");
   const email = formData.get("email");
   const password = formData.get("password") as string;
-
+  const hashedPassword = await bcrpyt.hash(password, 10);
   const file: File | null = formData.get("profilePic") as File;
-  if (file?.name !='') {
+  if (file?.name != "") {
     const profilePic = await upLoadProfilePic(file);
     try {
       connectDB();
@@ -21,13 +21,14 @@ export const POST = auth(async function POST(request: NextRequest) {
       if (existUser) {
         return NextResponse.json({ message: "User already exist" });
       }
-      const result = await user.create({
+      const result:IUser = await user.create({
         username,
         email,
-        password,
+        password: hashedPassword,
         profilePic: profilePic,
       });
-      return NextResponse.json({ message: "User created" });
+
+      return NextResponse.json({ message: "User created", data: result });
     } catch (err: any) {
       console.log(err.message);
       return NextResponse.json({ message: " internal server error" });
@@ -42,13 +43,13 @@ export const POST = auth(async function POST(request: NextRequest) {
       const result = await user.create({
         username,
         email,
-        password,
+        password: hashedPassword,
       });
-      return NextResponse.json({ message: "User created" });
+
+      return NextResponse.json({ message: "User created",data:result });
     } catch (err: any) {
       console.log(err.message);
       return NextResponse.json({ message: " internal server error" });
     }
   }
-
 });

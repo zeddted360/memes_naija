@@ -1,4 +1,3 @@
-import { Button } from '@/components/ui/button';
 import { buttonVariants } from "@/components/ui/button";
 
 import Link from 'next/link';
@@ -6,7 +5,6 @@ import { auth } from '../../auth';
 
 export default async  function Landing() {
   const session = await auth()
-  // if (session) navigate('naija_memes/home');
   return (
     <main className="h-screen flex flex-col justify-between">
       <h1 className="p-2 text-center shadow-lg  font-bold">

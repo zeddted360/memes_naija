@@ -3,6 +3,7 @@ import React, { useState, useRef } from "react";
 import PasswordCheck from "./PasswordCheck";
 import { validateSignUp } from "@/utils/validateSignUp";
 import { useRouter } from "next/navigation";
+import { IUser } from "../types/types";
 export type UserType = {
   username: string;
   email: string;
@@ -46,27 +47,53 @@ const SignUpUi = ({ styles }: { styles: any }) => {
     setLoading(true);
     const form = e.target;
     const formData = new FormData(form as HTMLFormElement);
+    let username = formData.get('username');
+    let email = formData.get("email");
+    let password = formData.get("password");
     try {
-      setLoading(true);
-      const res = await fetch(`/api/user`, {
-        method: "POST",
-        body: formData,
-      });
-      if (!res.ok) {
-        setLoading(false);
-        throw new Error("Something went wrong");
-        return
-      }
-      const data = await res.json();
-      window.alert(data.message);
+    
+    const  res1 =  await fetch(`/api/user`, {
+          method: "POST",
+          body: formData,
+    })
+      
+ if (!res1.ok) {
+   throw new Error(" API call failed in either one");
+ }
+      const data1:{message:string,data:IUser} = await res1.json();
+      
+      if (data1) {
+   const res2 = await fetch(`http://localhost:8080/api/user/register`, {
+     method: "POST",
+     headers: {
+       "Content-Type": "application/json",
+     },
+     body: JSON.stringify({
+       username,
+       email,
+       password,
+       _id: data1.data._id,
+       profilePic: data1.data.profilePic && data1.data.profilePic,
+     }),
+   });
+
+   if (!res2.ok) {
+     throw new Error(" API call failed in either one");
+        }
+      const data2 = await res2.json();
+}
+ 
+
+      // Handle successful responses
+      window.alert("Sign up successful!");
       setLoading(false);
       router.push("/api/auth/signin");
     } catch (error: any) {
       setLoading(false);
-      console.log(error.message);
+      console.error("Error during sign up:", error.message);
+      window.alert("Sign up failed. Please try again.");
     }
   };
-
   const isFormInvalid: () => boolean = () => {
     const { username, email, password, confirmPassword } = user;
     let errs = Object.values(errors);
@@ -81,7 +108,7 @@ const SignUpUi = ({ styles }: { styles: any }) => {
 
   return (
     <div className={styles.signUp}>
-      <form onSubmit={handleSignUp}>
+      <form encType="multipart/formdata" onSubmit={handleSignUp}>
         <div>
           <input
             required

@@ -3,12 +3,18 @@ import Image from "next/image";
 import { timeAgo } from "@/utils/timeAgo";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
+import {
+  faComment,
+  faCommentAlt,
+  faMessage,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
 
 const getprofile = async (_id: string) => {
   const res = await fetch(`http://localhost:3000/api/profile/${_id}`);
   return res.json();
 };
+
 const page = async ({ params }: { params: { _id: string } }) => {
   const { _id } = params;
   const user = await getprofile(_id);
@@ -35,7 +41,12 @@ const page = async ({ params }: { params: { _id: string } }) => {
             )}
           </div>
         }
-        <h1 className="text-2xl font-bold">{user.message.username}</h1>
+        <div className="flex mx-2 items-center justify-between gap-2">
+          <h1 className="text-2xl font-bold">{user.message.username}</h1>
+          <Link href={"/naija_memes/chat/"+_id}>
+            <FontAwesomeIcon className="h-6 w-6" icon={faComment} />
+          </Link>
+        </div>
         <hr />
         <p>
           email
